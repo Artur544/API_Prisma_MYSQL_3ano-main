@@ -92,6 +92,47 @@ module.exports = {
         }catch(error){
             res.status(500).json({ error: "Erro ao remover o produto" });
         }
-    }
+    },
 
+    async quantidadeProduto(req,res){
+        try {
+            const produtos = await prisma.produtos.findMany({
+                orderBy: {
+                    quantidade: 'desc',
+                },
+                take: 1,
+        });
+            if (!produtos){
+                return res.status(404).json( 
+                    {
+                        error: "Produto não encontrado"}
+                    );
+            }
+            res.status(200).json(produtos)
+
+        }catch(error){
+            res.status(500).json({ error: "Erro de acesso aos dados do produto" });
+        }
+    },
+
+    async valorProduto(req,res){
+        try {
+            const produtos = await prisma.produtos.findMany({
+                orderBy: {
+                    valor: 'desc',
+                },
+                take: 1,
+        });
+            if (!produtos){
+                return res.status(404).json( 
+                    {
+                        error: "Produto não encontrado"}
+                    );
+            }
+            res.status(200).json(produtos)
+
+        }catch(error){
+            res.status(500).json({ error: "Erro de acesso aos dados do produto" });
+        }
+    }
 };

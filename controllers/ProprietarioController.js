@@ -92,5 +92,25 @@ module.exports = {
         }
     }
 
+    ,
 
+    async buscaNome(req, res) {
+        try {
+            const { nome } = req.params.nome;
+            const proprietario = await prisma.proprietarios.findMany({
+                where: {nome: nome}
+            });
+            if (!proprietario) {
+                return res.status(404).json(
+                    {
+                        error: "Proprietario não encontrado"
+                    }
+                );
+            }
+            res.status(200).json(proprietario)
+
+        } catch (error) {
+            res.status(500).json({ error: "Erro de acesso aos dados do proprietario" });
+        }
+    }
 };
