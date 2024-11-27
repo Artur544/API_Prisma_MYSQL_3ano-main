@@ -134,5 +134,45 @@ module.exports = {
         }catch(error){
             res.status(500).json({ error: "Erro de acesso aos dados do produto" });
         }
+    },
+
+    async valorTotalProduto(req,res){
+        try {
+            const prisma = new PrismaClient()
+            .$extends({
+                result: {
+                    produtos: {
+                        valorTotal: {
+                            needs: { quantidade: true, valor: true },
+                            compute(produtos) {
+                                return produtos.quantidade*produtos.valor;
+                            },
+                        },
+                    },
+                },
+            })
+            
+            // const produto = await prisma.produtos.findMany({
+            //     orderBy: {
+            //         valorTotal: 'desc'
+            //     }
+            // });
+            
+            const produto = await prisma.produtos.findMany();
+            produto.sort((a,b) => {
+                return b.valorTotal - a.valorTotal
+            })
+
+            if (!produto){
+                return res.status(404).json( 
+                    {
+                        error: "Produto não encontrado"}
+                    );
+            }
+            res.status(200).json(produto[0])
+
+        }catch(error){
+            res.status(500).json({ error: "Erro de acesso aos dados do produto" });
+        }
     }
 };

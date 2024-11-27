@@ -28,7 +28,6 @@ module.exports = {
 
         }catch(error){
             res.status(500).json({ error: "Erro de acesso aos dados do proprietário" });
-      
         }
     },
 
@@ -79,10 +78,7 @@ module.exports = {
 
                 {
                     where: { id: Number(id) }
-
-
                 }
-
 
             )
             res.status(204).json({ message: "Produto removido com sucesso." } )
@@ -90,20 +86,51 @@ module.exports = {
         }catch(error){
             res.status(500).json({ error: "Erro ao remover o produto" });
         }
-    }
-
-    ,
+    },
 
     async buscaNome(req, res) {
         try {
-            const { nome } = req.params.nome;
+            const nome = req.params.nome;
             const proprietario = await prisma.proprietarios.findMany({
-                where: {nome: nome}
+                where: {
+                    nome: {
+                        contains: nome
+                    }
+                }
+            });
+            if ((!proprietario) || (proprietario == 0)) {
+                return res.status(404).json(
+                    {
+                        error: "Proprietario não encontrado"
+                    }
+                );
+            }
+            res.status(200).json(proprietario)
+
+        } catch (error) {
+            res.status(500).json({ error: "Erro de acesso aos dados do proprietario" });
+        }
+    },
+
+    async proprietarioMaisProdutos(req, res) {
+        try {
+            const proprietario = await prisma.proprietarios.findMany({
+                include: {
+                    _count: {
+                        select: {produtos:true}
+                    }
+                },
+                orderBy: {
+                    produtos: {
+                        _count: 'desc'
+                    }
+                },
+                take: 1
             });
             if (!proprietario) {
                 return res.status(404).json(
                     {
-                        error: "Proprietario não encontrado"
+                        error: "Produtos não encontrados"
                     }
                 );
             }

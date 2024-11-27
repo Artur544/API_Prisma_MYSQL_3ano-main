@@ -9,5 +9,6 @@ router.delete('/proprietario/:id', ProprietarioController.deletarProprietario)
 router.put('/proprietario/:id',ProprietarioController.atualizarProprietario)
 //pesquisas
 router.get('/proprietario/nome/:nome',ProprietarioController.buscaNome)
+router.get('/proprietario_produtos',ProprietarioController.proprietarioMaisProdutos)
 
 module.exports = router

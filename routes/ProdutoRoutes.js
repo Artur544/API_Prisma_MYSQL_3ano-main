@@ -10,6 +10,6 @@ router.put('/produto/:id',ProdutoController.atualizarProduto)
 //pesquisa
 router.get('/produtoMaiorquantidade',ProdutoController.quantidadeProduto)
 router.get('/produtoMaiorvalor',ProdutoController.valorProduto)
-
+router.get('/produtoValorTotal',ProdutoController.valorTotalProduto)
 
 module.exports = router
